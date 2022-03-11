@@ -61,3 +61,58 @@ Servlet 生命周期可被定义为从创建直到毁灭的整个过程。以下
 ### Servlet 在容器中是单例的、线程不安全的
 
 （尽量不要在Servlet中定义成员变量 如果定义则不要修改其值）
+
+
+
+
+
+### init()
+
+```
+public void init() throws ServletException {  
+}
+public void init(ServletConfig config) throws ServletException {  
+    this.config = config;  
+    this.init();  
+}
+```
+
+ServletConfig:代表的是配置信息。即在web.xml中配置的信息,配置例子如下：
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>servletinit</display-name>
+  <servlet>
+      <servlet-name>si</servlet-name>
+      <servlet-class>com.xiaoan.test.TestInit</servlet-class>
+      <init-param>
+          <param-name>username</param-name>
+          <param-value>51gjie</param-value>
+      </init-param>
+      <init-param>
+          <param-name>password</param-name>
+          <param-value>123456</param-value>
+      </init-param>
+      <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>si</servlet-name>
+      <url-pattern>/si</url-pattern>
+  </servlet-mapping>
+</web-app>
+```
+
+通过注解配置
+```
+@WebServlet(value="/LoginServlet",initParams={
+		@WebInitParam(name = "default_market", value = "NASDAQ"),	
+		@WebInitParam(name = "user_market", value = "userNASDAQ")	
+})
+```
+
+
+
+# ServletContext
+
+[ ServletContext介绍及用法_白衬衫丶的博客-CSDN博客_servletcontext](https://blog.csdn.net/qq_36371449/article/details/80314024)
