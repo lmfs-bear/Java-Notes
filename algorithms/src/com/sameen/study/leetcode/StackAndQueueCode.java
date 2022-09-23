@@ -16,7 +16,6 @@ public class StackAndQueueCode {
     }
 
     /**
-     *
      * @param nums
      * @param k
      * @return
@@ -42,4 +41,14 @@ public class StackAndQueueCode {
         }
         return res;
     }
+
+    /**
+     * 给定一个不含有重复值的数组arr，找到每一个i位置左边和右边离i位置最近且值比arr[i]小的位置。返回所有位置相应的信息。
+     * @param arr
+     * @return
+     */
+    public static List<int[]> singleStack(int[] arr) {
+
+    }
+
 }
