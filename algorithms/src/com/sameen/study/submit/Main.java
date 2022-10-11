@@ -1,11 +1,11 @@
 package com.sameen.study.submit;
 
-import com.sameen.study.leetcode.StackAndQueueCode;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.io.PrintWriter;
+import java.util.Stack;
 
 /**
  * @author: zhangjinming on 2022/10/11
@@ -137,50 +137,76 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        getNum();
+//        PrintWriter out = new PrintWriter(System.out);
+        getPairNum2();
     }
 
-    public static void getNum() throws IOException {
+    /**
+     * https://www.nowcoder.com/practice/16d1047e9fa54cea8b5170b156d89e38?tpId=101&rp=1&ru=%2Fexam%2Foj%2Fta&qru=%2Fexam%2Foj%2Fta&sourceUrl=%2Fexam%2Foj%2Fta%3Fpage%3D1%26pageSize%3D50%26search%3D%25E6%259C%2580%25E5%25A4%25A7%25E5%2580%25BC%26tpId%3D101%26type%3D101&difficulty=&judgeStatus=&tags=&title=%E5%B1%B1%E5%B3%B0&gioEnter=menu
+     * 可见的山峰对数量 含重复数字
+     */
+    public static void getPairNum2() throws IOException {
         Reader reader = new Reader();
         int n = reader.nextInt();
-        int num = reader.nextInt();
         int[] arr = new int[n];
+        int maxIndex = 0, max = 0;
         for (int i = 0; i < n; i++) {
             arr[i] = reader.nextInt();
-        }
-        LinkedList<Integer> maxQueue = new LinkedList<>();
-        LinkedList<Integer> minQueue = new LinkedList<>();
-        int i = 0, j = 0, result = 0;
-        maxQueue.add(arr[0]);
-        minQueue.add(arr[0]);
-        while (i < n) {
-            if (j < n && maxQueue.getLast() - minQueue.getLast() <= num) {
-                j++;
-                if (j < n) {
-                    while (!maxQueue.isEmpty() && arr[j] > maxQueue.getFirst()) {
-                        maxQueue.removeFirst();
-                    }
-                    maxQueue.addFirst(arr[j]);
-                    while (!minQueue.isEmpty() && arr[j] < minQueue.getFirst()) {
-                        minQueue.removeFirst();
-                    }
-                    minQueue.addFirst(arr[j]);
-                }
-            } else {
-                if (j == n && maxQueue.getLast() - minQueue.getLast() > num) {
-                    i++;
-                    continue;
-                }
-                if (maxQueue.getLast().equals(arr[i])) {
-                    maxQueue.removeLast();
-                }
-                if (minQueue.getLast().equals(arr[i])) {
-                    minQueue.removeLast();
-                }
-                result += j - i;
-                i++;
+            if (max < arr[i]) {
+                max = arr[i];
+                maxIndex = i;
             }
         }
-        System.out.println(result);
+
+        Stack<Record> stack = new Stack<>();
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            int num = arr[(maxIndex + i) % n];
+            while (!stack.isEmpty() && num > stack.peek().val) {
+                Record pop = stack.pop();
+                res += pop.times == 1 ? 2 : (pop.times * 2 + getCk2(pop.times));
+            }
+            if (!stack.isEmpty() && stack.peek().val == num) {
+                Record pop = stack.pop();
+                stack.push(new Record(pop.val, pop.times + 1));
+            } else {
+                stack.push(new Record(num, 1));
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            //case 1
+            if (stack.size() == 1) {
+                int times = stack.pop().times;
+                res += times == 1 ? 0 : getCk2(times);
+                break;
+            }
+            //case 2
+            if (stack.size() == 2) {
+                int times = stack.pop().times;
+                int PeekTimes = stack.peek().times;
+                res += PeekTimes == 1 ? times + getCk2(times) : (times * 2 + getCk2(times));
+            } else {
+                //case 3
+                int times = stack.pop().times;
+                res += times * 2 + getCk2(times);
+            }
+        }
+        System.out.println(res);
     }
+
+    public static int getCk2(int k) {
+        return k * (k - 1) / 2;
+    }
+
+    static class Record {
+        int val;
+        int times;
+
+        public Record(int val, int times) {
+            this.val = val;
+            this.times = times;
+        }
+    }
+
 }
