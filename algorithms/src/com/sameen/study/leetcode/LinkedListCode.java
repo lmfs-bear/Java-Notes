@@ -28,6 +28,60 @@ public class LinkedListCode {
         return head;
     }
 
+    /**
+     * 删除链表的中间节点
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteMiddle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode cur = head, next = head.next.next;
+        while (next != null && next.next != null) {
+            next = next.next;
+            next = next.next;
+            cur = cur.next;
+        }
+        cur.next = cur.next.next;
+        return head;
+    }
+
+    /**
+     * reverse list-node II
+     *
+     * @param head
+     * @param left
+     * @param right
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        if (head.next == null) return head;
+        int n = right - left + 1;
+        ListNode pre = head, next = null, res = head, leftNode = head;
+        head = head.next;
+        while (left-- > 2) {
+            head = head.next;
+            leftNode = leftNode.next;
+        }
+//        while (head != null) {
+//            next = head.next;
+//            head.next = pre;
+//            pre = head;
+//            head = next;
+//        }
+        while (n-- > 0) {
+            next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        leftNode.next.next = head;
+        leftNode.next = pre;
+        return res;
+    }
+
 }
 
 class ListNode {
