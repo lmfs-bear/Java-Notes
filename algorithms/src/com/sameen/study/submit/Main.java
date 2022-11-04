@@ -1,11 +1,8 @@
 package com.sameen.study.submit;
 
-
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Stack;
 
 /**
  * @author: zhangjinming on 2022/10/11
@@ -137,75 +134,78 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-//        PrintWriter out = new PrintWriter(System.out);
-        getPairNum2();
+        Reader reader = new Reader();
+        int n = reader.nextInt();
+        int pivot = reader.nextInt();
+        ListNode head = new ListNode(reader.nextInt());
+        ListNode pre = head;
+        for (int i = 1; i < n; i++) {
+            head.next = new ListNode(reader.nextInt());
+            head = head.next;
+        }
+        ListNode res = listPartition(pre, pivot);
+        StringBuilder builder = new StringBuilder();
+        while (res != null) {
+            builder.append(res.val + " ");
+            res = res.next;
+        }
+        System.out.println(builder.toString());
     }
 
     /**
-     * https://www.nowcoder.com/practice/16d1047e9fa54cea8b5170b156d89e38?tpId=101&rp=1&ru=%2Fexam%2Foj%2Fta&qru=%2Fexam%2Foj%2Fta&sourceUrl=%2Fexam%2Foj%2Fta%3Fpage%3D1%26pageSize%3D50%26search%3D%25E6%259C%2580%25E5%25A4%25A7%25E5%2580%25BC%26tpId%3D101%26type%3D101&difficulty=&judgeStatus=&tags=&title=%E5%B1%B1%E5%B3%B0&gioEnter=menu
-     * 可见的山峰对数量 含重复数字
+     * 将单向链表按某值划分为左边小，中间相等，右边大的形式
+     * 时间复杂度 O(N) 空间复杂度 O(1)
+     * https://www.nowcoder.com/practice/04fcabc5d76e428c8100dbd855761778?tpId=101&tqId=33181&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fpage%3D1%26pageSize%3D50%26search%3D%25E6%258C%2589%25E6%259F%2590%26tpId%3D101%26type%3D101&difficulty=undefined&judgeStatus=undefined&tags=&title=%E6%8C%89%E6%9F%90
      */
-    public static void getPairNum2() throws IOException {
-        Reader reader = new Reader();
-        int n = reader.nextInt();
-        int[] arr = new int[n];
-        int maxIndex = 0, max = 0;
-        for (int i = 0; i < n; i++) {
-            arr[i] = reader.nextInt();
-            if (max < arr[i]) {
-                max = arr[i];
-                maxIndex = i;
-            }
-        }
-
-        Stack<Record> stack = new Stack<>();
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            int num = arr[(maxIndex + i) % n];
-            while (!stack.isEmpty() && num > stack.peek().val) {
-                Record pop = stack.pop();
-                res += pop.times == 1 ? 2 : (pop.times * 2 + getCk2(pop.times));
-            }
-            if (!stack.isEmpty() && stack.peek().val == num) {
-                Record pop = stack.pop();
-                stack.push(new Record(pop.val, pop.times + 1));
+    public static ListNode listPartition(ListNode head, int pivot) {
+        ListNode ss = null, se = null, ms = null, me = null, bs = null, be = null;
+        while (head != null) {
+            ListNode tmp = head;
+            head = head.next;
+            tmp.next = null;
+            if (tmp.val < pivot) {
+                if (ss == null) {
+                    ss = tmp;
+                    se = tmp;
+                } else {
+                    se.next = tmp;
+                    se = se.next;
+                }
+            } else if (tmp.val > pivot) {
+                if (bs == null) {
+                    bs = tmp;
+                    be = tmp;
+                } else {
+                    be.next = tmp;
+                    be = be.next;
+                }
             } else {
-                stack.push(new Record(num, 1));
+                if (ms == null) {
+                    ms = tmp;
+                    me = tmp;
+                } else {
+                    me.next = tmp;
+                    me = me.next;
+                }
             }
         }
-
-        while (!stack.isEmpty()) {
-            //case 1
-            if (stack.size() == 1) {
-                int times = stack.pop().times;
-                res += times == 1 ? 0 : getCk2(times);
-                break;
-            }
-            //case 2
-            if (stack.size() == 2) {
-                int times = stack.pop().times;
-                int PeekTimes = stack.peek().times;
-                res += PeekTimes == 1 ? times + getCk2(times) : (times * 2 + getCk2(times));
-            } else {
-                //case 3
-                int times = stack.pop().times;
-                res += times * 2 + getCk2(times);
-            }
+        ListNode res = ss == null ? (ms == null ? bs : ms) : ss;
+        if (ss != null) {
+            se.next = ms == null ? bs : ms;
         }
-        System.out.println(res);
+        if (ms != null) {
+            me.next = bs == null ? null : bs;
+        }
+        return res;
     }
 
-    public static int getCk2(int k) {
-        return k * (k - 1) / 2;
-    }
-
-    static class Record {
+    static class ListNode {
         int val;
-        int times;
+        ListNode next;
 
-        public Record(int val, int times) {
-            this.val = val;
-            this.times = times;
+        ListNode(int x) {
+            val = x;
+            next = null;
         }
     }
 
