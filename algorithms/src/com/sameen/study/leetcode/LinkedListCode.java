@@ -1,5 +1,7 @@
 package com.sameen.study.leetcode;
 
+import java.util.List;
+
 /**
  * @author: zhangjinming on 2022/10/11
  * @description:
@@ -99,8 +101,46 @@ public class LinkedListCode {
      * @return
      */
     public boolean isPalindrome(ListNode head) {
-        return false;
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode p1 = head, p2 = head, first = null;
+        while (p2.next != null && p2.next.next != null) {
+            p2 = p2.next.next;
+            p1 = p1.next;
+        }
+        first = p1.next;
+        p1.next = null;
+        first = reverse(first);
+        while (first != null) {
+            if (first.val != head.val) {
+                return false;
+            }
+            head = head.next;
+            first = first.next;
+        }
+        return true;
     }
+
+    public ListNode reverse(ListNode head) {
+        ListNode pre = null, next = null;
+        while (head != null) {
+            next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        return pre;
+    }
+
+    /**
+     * 将单向链表按某值划分为左边小，中间相等，右边大的形式
+     * https://www.nowcoder.com/practice/04fcabc5d76e428c8100dbd855761778?tpId=101&tqId=33181&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fpage%3D1%26pageSize%3D50%26search%3D%25E6%258C%2589%25E6%259F%2590%26tpId%3D101%26type%3D101&difficulty=undefined&judgeStatus=undefined&tags=&title=%E6%8C%89%E6%9F%90
+     */
+    public ListNode listPartition(ListNode head, int pivot) {
+        return null;
+    }
+
 }
 
 class ListNode {
