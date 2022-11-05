@@ -1,6 +1,7 @@
 package com.sameen.study.leetcode;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author: zhangjinming on 2022/10/11
@@ -214,6 +215,44 @@ public class LinkedListCode {
             copy.next = cur == null ? null : cur.next;
         }
         return res;
+    }
+
+    /**
+     * https://leetcode.cn/problems/lMSNwu/
+     * f1:翻转链表 f2:利用栈逆序
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        Stack<Integer> stack1 = new Stack<>();
+        Stack<Integer> stack2 = new Stack<>();
+        while (l1 != null) {
+            stack1.push(l1.val);
+            l1 = l1.next;
+        }
+        while (l2 != null) {
+            stack2.push(l2.val);
+            l2 = l2.next;
+        }
+        int c = 0;
+        ListNode pre = null;
+        while (!stack1.isEmpty() || !stack2.isEmpty()) {
+            Integer num1 = stack1.isEmpty() ? 0 : stack1.pop();
+            Integer num2 = stack2.isEmpty() ? 0 : stack2.pop();
+            int sum = num1 + num2 + c;
+            c = sum >= 10 ? 1 : 0;
+            ListNode node = new ListNode(sum % 10);
+            node.next = pre;
+            pre = node;
+        }
+        if (c == 1) {
+            ListNode node = new ListNode(1);
+            node.next = pre;
+            pre = node;
+        }
+        return pre;
     }
 }
 
