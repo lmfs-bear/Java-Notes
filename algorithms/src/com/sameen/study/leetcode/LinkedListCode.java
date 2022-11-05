@@ -180,6 +180,54 @@ public class LinkedListCode {
         return res;
     }
 
+    /**
+     * 复制带随机指针的链表
+     * https://leetcode.cn/problems/copy-list-with-random-pointer/
+     * 时间复杂度 O(N) 空间复杂度 O(1)
+     *
+     * @param head
+     * @return
+     */
+    public Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        Node cur = head, copy = null, res = null;
+        while (cur != null) {
+            Node node = new Node(cur.val);
+            node.next = cur.next;
+            cur.next = node;
+            cur = node.next;
+        }
+        cur = head;
+        res = head.next;
+        while (cur != null) {
+            copy = cur.next;
+            copy.random = cur.random == null ? null : cur.random.next;
+            cur = copy.next;
+        }
+        cur = head;
+        while (cur != null) {
+            copy = cur.next;
+            cur.next = copy.next;
+            cur = copy.next;
+            copy.next = cur == null ? null : cur.next;
+        }
+        return res;
+    }
+}
+
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
 }
 
 class ListNode {
