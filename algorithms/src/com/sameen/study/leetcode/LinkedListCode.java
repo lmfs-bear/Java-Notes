@@ -62,26 +62,27 @@ public class LinkedListCode {
     public ListNode reverseBetween(ListNode head, int left, int right) {
         if (head.next == null) return head;
         int n = right - left + 1;
-        ListNode pre = head, next = null, res = head, leftNode = head;
-        head = head.next;
-        while (left-- > 2) {
+        ListNode pre = null, next = null, res = head, leftNode = head, rightNode = head;
+        if (left > 1) {
+            while (left-- > 2) {
+                head = head.next;
+                leftNode = leftNode.next;
+            }
             head = head.next;
-            leftNode = leftNode.next;
+            rightNode = head;
         }
-//        while (head != null) {
-//            next = head.next;
-//            head.next = pre;
-//            pre = head;
-//            head = next;
-//        }
         while (n-- > 0) {
             next = head.next;
             head.next = pre;
             pre = head;
             head = next;
         }
-        leftNode.next.next = head;
-        leftNode.next = pre;
+        if (leftNode != rightNode) {
+            leftNode.next = pre;
+        } else {
+            res=pre;
+        }
+        rightNode.next = next;
         return res;
     }
 
