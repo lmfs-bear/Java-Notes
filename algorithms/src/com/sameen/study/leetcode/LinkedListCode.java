@@ -1,6 +1,6 @@
 package com.sameen.study.leetcode;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Stack;
 
 /**
@@ -80,7 +80,7 @@ public class LinkedListCode {
         if (leftNode != rightNode) {
             leftNode.next = pre;
         } else {
-            res=pre;
+            res = pre;
         }
         rightNode.next = next;
         return res;
@@ -255,6 +255,174 @@ public class LinkedListCode {
         }
         return pre;
     }
+
+    /**
+     * 两个单链表相交 有环、无环
+     * 拆分子问题
+     * 1、判断是否有环（一个有环相交） 有环和无环 不可能相交
+     * 2、两个无环相交
+     * 3、两个有环相交
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        //无环相交 https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/
+//        if (headA == null || headB == null) {
+//            return null;
+//        }
+//        ListNode pA = headA, pB = headB;
+//        while (pA != pB) {
+//            pA = pA == null ? headB : pA.next;
+//            pB = pB == null ? headA : pB.next;
+//        }
+//        return pA;
+
+        //两个有环相交
+        return null;
+    }
+
+    /**
+     * 链表中环的入口节点
+     * https://leetcode.cn/problems/c32eOV/
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode fast = head, slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (slow == fast) {
+                break;
+            }
+        }
+        if (fast == null || fast.next == null) {
+            return null;
+        }
+        fast = head;
+        while (fast != slow) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+    /**
+     * 将单链表的每K个节点之间逆序
+     * https://www.nowcoder.com/practice/66285653d28b4ed6a15613477670e936?tpId=101&tqId=33187&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fpage%3D1%26pageSize%3D50%26search%3Dk%26tpId%3D101%26type%3D101&difficulty=undefined&judgeStatus=undefined&tags=&title=k
+     *
+     * @param head
+     * @param k
+     */
+    public ListNode reverseKNode(ListNode head, int k) {
+        if (k < 2) {
+            return head;
+        }
+        ListNode cur = head, pre = null, next = null, res = null, last = null;
+        boolean flag = false;
+        while (cur != null) {
+            int n = k, m = 0;
+            pre = null;
+            ListNode tmp = cur;
+            while (tmp != null && m < n) {
+                tmp = tmp.next;
+                m++;
+            }
+            if (n != m) {
+                if (last != null) {
+                    last.next = cur;
+                }
+                break;
+            } else {
+                ListNode lastCopy = last;
+                last = cur;
+                while (n-- > 0 && cur != null) {
+                    next = cur.next;
+                    cur.next = pre;
+                    pre = cur;
+                    cur = next;
+                }
+                if (!flag) {
+                    res = pre;
+                } else {
+                    lastCopy.next = pre;
+                }
+                flag = true;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 删除无序链表中值重复出现的节点
+     * f1: hashtable O(N) O(N)
+     * f2: O(N^2) O(1)
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        //f2
+//        ListNode cur = null, pre = null,res=head;
+//        while (head != null) {
+//            cur = head;
+//            int val = cur.val;
+//            pre = cur;
+//            while (cur != null) {
+//                cur = cur.next;
+//                while (cur != null && cur.val == val) {
+//                    cur = cur.next;
+//                }
+//                pre.next = cur;
+//                pre = cur;
+//            }
+//            head = head.next;
+//        }
+//        return res;
+
+        //f1
+
+        //f2
+        if (head == null) {
+            return null;
+        }
+        HashSet<Integer> set = new HashSet<>();
+        ListNode res = head, pre = head;
+        while (head != null) {
+            set.add(head.val);
+            head = head.next;
+            while (head != null && set.contains(head.val)) {
+                head = head.next;
+            }
+            pre.next = head;
+            pre = head;
+        }
+        return res;
+    }
+
+    public ListNode deleteNode(ListNode head, int val) {
+        ListNode res = head, pre = null;
+        while (head != null && head.val == val) {
+            head = head.next;
+        }
+        res=head;
+        while (head != null) {
+            pre = head;
+            head = head.next;
+            if (head != null && head.val == val) {
+                head = head.next;
+                pre.next = head;
+            }
+        }
+        return res;
+    }
+
 }
 
 // Definition for a Node.
