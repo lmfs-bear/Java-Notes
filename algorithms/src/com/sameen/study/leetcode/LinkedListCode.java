@@ -60,7 +60,9 @@ public class LinkedListCode {
      * @return
      */
     public ListNode reverseBetween(ListNode head, int left, int right) {
-        if (head.next == null) return head;
+        if (head.next == null) {
+            return head;
+        }
         int n = right - left + 1;
         ListNode pre = null, next = null, res = head, leftNode = head, rightNode = head;
         if (left > 1) {
@@ -411,7 +413,7 @@ public class LinkedListCode {
         while (head != null && head.val == val) {
             head = head.next;
         }
-        res=head;
+        res = head;
         while (head != null) {
             pre = head;
             head = head.next;
@@ -427,6 +429,7 @@ public class LinkedListCode {
 
 // Definition for a Node.
 class Node {
+
     int val;
     Node next;
     Node random;
@@ -439,6 +442,7 @@ class Node {
 }
 
 class ListNode {
+
     int val;
     ListNode next;
 

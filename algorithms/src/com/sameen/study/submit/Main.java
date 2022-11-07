@@ -4,7 +4,6 @@ package com.sameen.study.submit;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 
 /**
  * @author: zhangjinming on 2022/10/11
@@ -13,6 +12,7 @@ import java.util.HashSet;
 public class Main {
 
     static class Reader {
+
         final private int BUFFER_SIZE = 1 << 16;
         private DataInputStream din;
         private byte[] buffer;
@@ -144,7 +144,7 @@ public class Main {
             head.next = new ListNode(reader.nextInt());
             head = head.next;
         }
-        ListNode res = deleteDuplicates(pre);
+        ListNode res = combineLists(pre);
         StringBuilder builder = new StringBuilder();
         while (res != null) {
             builder.append(res.val + " ");
@@ -153,27 +153,33 @@ public class Main {
         System.out.println(builder.toString());
     }
 
-    public static ListNode deleteDuplicates(ListNode head) {
-        //f2
+    public static ListNode combineLists(ListNode head) {
         if (head == null) {
             return null;
         }
-        HashSet<Integer> set = new HashSet<>();
-        ListNode res = head, pre = head;
-        set.add(head.val);
-        while (head != null) {
-            head = head.next;
-            set.add(head.val);
-            while (head != null && set.contains(head.val)) {
-                head = head.next;
-            }
-            pre.next = head;
-            pre = head;
+        ListNode fast = head, slow = head, cur = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
         }
-        return res;
+        ListNode l1 = head, l2 = slow;
+        while (true) {
+            l1 = l1.next;
+            cur.next = l2;
+            cur = cur.next;
+            l2 = l2.next;
+            if (l1 == slow) {
+                cur.next = l2;
+                break;
+            }
+            cur.next = l1;
+            cur = cur.next;
+        }
+        return head;
     }
 
     static class ListNode {
+
         int val;
         ListNode next;
 
